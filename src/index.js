@@ -14,6 +14,8 @@ async function processLineByLine(file) {
   });
 
   let totalScore = 0;
+
+  // Get the score from the lines and add them together
   for await (const line of rl) {
     const sent = sentiment(line);
     totalScore += sent.score;
@@ -22,9 +24,11 @@ async function processLineByLine(file) {
   return totalScore;
 }
 
+// Read files from the input folder
 fs.readdir(inputFolder, async (err, files) => {
   const scores = [];
   for (const file of files) {
+    // Read the files line by line
     const score = await processLineByLine(`${inputFolder}${file}`);
     scores.push({
       fileName: file,
@@ -32,7 +36,7 @@ fs.readdir(inputFolder, async (err, files) => {
     });
   }
 
+  // Output the scores for each file to console and a json file
   console.log(scores);
-
   fs.writeFile(`${outputFolder}scores.json`, JSON.stringify(scores), () => {});
 });
